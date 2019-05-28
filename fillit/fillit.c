@@ -28,10 +28,10 @@ int		ft_receive_in_lst(int fd, t_list *begin)
 	{
 		begin->content = (t_tetrimino*)ft_memalloc(sizeof(t_tetrimino));
 		line_nbr = 1;
-		while (k <= 5 && (retur_get = get_next_line(fd, &tmp)) == 1)
+		while (line_nbr <= 5 && (retur_get = get_next_line(fd, &tmp)) == 1)
 		{
 			//test begin
-			if ((k % 5) == 0)
+			if ((line_nbr % 5) == 0)
 			{
 				if (ft_strlen(tmp) != 0)
 					return (0);
@@ -53,7 +53,7 @@ int		ft_receive_in_lst(int fd, t_list *begin)
 			}
 			line_nbr++;
 		}
-		if (retur_get == 0 && k == 5)
+		if (retur_get == 0 && line_nbr == 5)
 			return (1);
 		else if (k == 6)
 		{
