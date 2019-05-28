@@ -11,65 +11,91 @@
 
 #include "fillit.h"
 
-int		check_file(int fd, char **tab)
+int		ft_receive_in_lst(int fd, t_list *begin)
 {
-	int i;
-	int j;
-	int max_line;
+	int		i;
+	int		line_nbr;
+	int		n;
+	int		max_tetriminos;
+	char	*tmp;
+	int		retur_get;
+	t_list		*new;
 
-	i = 0;
-	max_line = (5 * 26) - 1;
-	while ((get_next_line(fd, &tab[i]) == 1) && (i < (max_line)))
+	n = 1;
+	max_tetriminos =  26;
+	retur_get = 1;
+	while (retur_get == 1 && n < max_tetriminos)
 	{
-		printf("%s\n", tab[i]);
-		if (((i + 1) % 5) == 0)
+		begin->content = (t_tetrimino*)ft_memalloc(sizeof(t_tetrimino));
+		line_nbr = 1;
+		while (k <= 5 && (retur_get = get_next_line(fd, &tmp)) == 1)
 		{
-			if (tab[i][0] != '\0')
-				return (0);
+			//test begin
+			if ((k % 5) == 0)
+			{
+				if (ft_strlen(tmp) != 0)
+					return (0);
+			}
+			else
+			{
+				if ((ft_strlen(tmp) != 4))
+					return (0);
+				i = 0;
+				while (tmp[i])
+				{
+					if (!ft_strchr("#.", tmp[i]))
+						return (0);
+					i++;
+				}
+				//test end
+				ft_strcat(((t_tetrimino*)(begin->content))->tab, tmp);
+				ft_strdel(&tmp);
+			}
+			line_nbr++;
+		}
+		if (retur_get == 0 && k == 5)
+			return (1);
+		else if (k == 6)
+		{
+			new = (t_list*)ft_memalloc(sizeof(*new));
+			ft_lst_add_end(begin, new);
+			begin = begin->next;
 		}
 		else
-		{
-			if ((ft_strlen(tab[i]) != 4))
-				return (0);
-			j = 0;
-			while (tab[i][j])
-			{
-				if (!ft_strchr("#.", tab[i][j]))
-					return (0);
-				j++;
-			}
-		}
-		i++;
+			return (0);
+		n++;
 	}
-	if (i >= ((5 * 26) - 1))
+	if (n >= max_tetriminos)
 		return (0);
 	return (1);
 }
 
 /*int	check_tetriminos(char **tab)
-{
+  {
 
-}*/
+  }*/
 
 int		main(int ac, char **av)
 {
-	int fd;
-	char **tab;
+	int				fd;
+	t_list 			*begin;
 
-	tab = (char**)ft_memalloc(sizeof(*tab) * 27);
-	if (ac == 2)
+	begin = ft_lstnew(NULL, 0);
+	if (ac != 2)
+		ft_putstr("usage: fillit file_name\n");
+	else
 	{
 		fd = open(av[1], O_RDONLY);
-		if (check_file(fd, tab))
+		if (!ft_receive_in_lst(fd, begin))
+			ft_putstr("error\n");
+		else 
 		{
 			ft_putstr("file is valid\n");
-			if (check_tetriminos(tab))
+			printf("%c\n", ((t_tetrimino*)(begin->next->next->next->content))->tab[15]);
+
+			//if (check_tetriminos(tab))
 
 		}
-		else 
-			ft_putstr("error\n");
 	}
-	else
-		ft_putstr("usage: fillit file_name\n");
 	return (1);
 }
