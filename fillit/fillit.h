@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:55:55 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/05/25 05:41:08 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/05/28 18:59:58 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 typedef struct		s_tetrimino
 {
-	char 			tab[17];
+	char 			*tab;
 	int				height;
 	int				width;
 	int				nbr_of_block;

@@ -11,90 +11,88 @@
 
 #include "fillit.h"
 
-int		ft_receive_in_lst(int fd, t_list *begin)
+int		ft_check_input(char *buff)
 {
 	int		i;
-	int		line_nbr;
-	int		n;
-	int		max_tetriminos;
-	char	*tmp;
-	int		retur_get;
-	t_list		*new;
+	int		contact;
+	int		point;
 
-	n = 1;
-	max_tetriminos =  26;
-	retur_get = 1;
-	while (retur_get == 1 && n < max_tetriminos)
+	i = -1;
+	contact = 0;
+	point = 0;
+	while (++i < 20)
 	{
-		begin->content = (t_tetrimino*)ft_memalloc(sizeof(t_tetrimino));
-		line_nbr = 1;
-		while (line_nbr <= 5 && (retur_get = get_next_line(fd, &tmp)) == 1)
+		if ((i + 1) % 5 == 0)
 		{
-			//test begin
-			if ((line_nbr % 5) == 0)
-			{
-				if (ft_strlen(tmp) != 0)
-					return (0);
-			}
-			else
-			{
-				if ((ft_strlen(tmp) != 4))
-					return (0);
-				i = 0;
-				while (tmp[i])
-				{
-					if (!ft_strchr("#.", tmp[i]))
-						return (0);
-					i++;
-				}
-				//test end
-				ft_strcat(((t_tetrimino*)(begin->content))->tab, tmp);
-				ft_strdel(&tmp);
-			}
-			line_nbr++;
-		}
-		if (retur_get == 0 && line_nbr == 5)
-			return (1);
-		else if (k == 6)
-		{
-			new = (t_list*)ft_memalloc(sizeof(*new));
-			ft_lst_add_end(begin, new);
-			begin = begin->next;
+			if (buff[i] != '\n')
+				return (0);
 		}
 		else
-			return (0);
-		n++;
+		{
+			if (buff[i] == '.')
+				point++;
+			else if (buff[i] == '#')
+			{
+				if (i > 0 && buff[i - 1] == '#')
+					contact++;
+				if (i < 19 && buff[i + 1] == '#')
+					contact++;
+				if (i < 14 && buff[i + 5] == '#')
+					contact++;
+				if (i > 4 && buff[i - 5] == '#')
+					contact++;
+			}
+			else
+				return (0);
+		}
 	}
-	if (n >= max_tetriminos)
-		return (0);
-	return (1);
+	return (point == 12 && (contact == 6 || contact == 8) && (buff[20] == '\n' || buff[20] == '\0'));
 }
 
-/*int	check_tetriminos(char **tab)
-  {
+int		ft_receive_in_lst(int fd, t_list **begin)
+{
+	char	buff[22];
+	t_list *new;
+	ssize_t ret;
 
-  }*/
+	while ((ret = read(fd, buff, 21)) >= 20)
+	{
+		buff[ret] = '\0';
+		if (!ft_check_input(buff))
+			return (0);
+		if (!(*begin))
+			*begin = ft_lstnew(NULL, 0);
+		else
+		{
+			new = (t_list*)ft_memalloc(sizeof(t_list));
+			ft_lstadd(begin, new);
+		}
+		(*begin)->content = ft_memalloc(sizeof(t_tetrimino));
+		((t_tetrimino*)((*begin)->content))->tab = ft_strdup(buff);
+	}
+	if (ret == 0 && buff[20] != '\0')
+		return (0);
+
+	return (1);
+}
 
 int		main(int ac, char **av)
 {
 	int				fd;
 	t_list 			*begin;
 
-	begin = ft_lstnew(NULL, 0);
 	if (ac != 2)
 		ft_putstr("usage: fillit file_name\n");
 	else
 	{
 		fd = open(av[1], O_RDONLY);
-		if (!ft_receive_in_lst(fd, begin))
+		begin = NULL;
+		if (!ft_receive_in_lst(fd, &begin))
 			ft_putstr("error\n");
 		else 
 		{
 			ft_putstr("file is valid\n");
-			printf("%c\n", ((t_tetrimino*)(begin->next->next->next->content))->tab[15]);
-
-			//if (check_tetriminos(tab))
-
+			printf("%s\n", ((t_tetrimino*)(begin->next->content))->tab);
 		}
 	}
 	return (1);
