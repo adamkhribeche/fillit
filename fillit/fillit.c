@@ -11,15 +11,28 @@
 
 #include "fillit.h"
 
+void	ft_replace_hashtag(char *tab, int order)
+{
+	int		i;
+
+	i = 0;
+	while (tab[i])
+	{
+		if (tab[i] == '#')
+			tab[i] = 65 + order;
+		i++;
+	}
+}
+
 int		ft_check_input(char *buff)
 {
 	int		i;
 	int		contact;
 	int		point;
 
-	i = -1;
 	contact = 0;
 	point = 0;
+	i = -1;
 	while (++i < 20)
 	{
 		if ((i + 1) % 5 == 0)
@@ -51,10 +64,13 @@ int		ft_check_input(char *buff)
 
 int		ft_receive_in_lst(int fd, t_list **begin)
 {
-	char	buff[22];
-	t_list *new;
-	ssize_t ret;
+	char		buff[22];
+	t_list		*new;
+	ssize_t		ret;
+	int			order;
 
+	order = -1;
+	ft_bzero(buff, 22);
 	while ((ret = read(fd, buff, 21)) >= 20)
 	{
 		buff[ret] = '\0';
@@ -67,6 +83,10 @@ int		ft_receive_in_lst(int fd, t_list **begin)
 			new = (t_list*)ft_memalloc(sizeof(t_list));
 			ft_lstadd(begin, new);
 		}
+		order++;
+		printf("befor :\n%s", buff);
+		ft_replace_hashtag(buff, order);
+		printf("after :\n%s", buff);
 		(*begin)->content = ft_memalloc(sizeof(t_tetrimino));
 		((t_tetrimino*)((*begin)->content))->tab = ft_strdup(buff);
 	}
@@ -92,7 +112,7 @@ int		main(int ac, char **av)
 		else 
 		{
 			ft_putstr("file is valid\n");
-			printf("%s\n", ((t_tetrimino*)(begin->next->content))->tab);
+			printf("%s\n", ((t_tetrimino*)(begin->content))->tab);
 		}
 	}
 	return (1);
