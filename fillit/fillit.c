@@ -1,3 +1,4 @@
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   fillit.c                                           :+:      :+:    :+:   */
@@ -5,11 +6,36 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/05/18 19:06:12 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/05/30 22:30:47 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
+
+void	ft_creat_board(char ***board, int size)
+{
+	int		i;
+	int		j;
+
+	*board = (char**) ft_memalloc(size * sizeof(char*));
+	i = 0;
+	while (i < size)
+	{
+		(*board)[i] = (char*) ft_memalloc(size * sizeof(char));
+		i++;
+	}
+	i = 0;
+	while (i < size)
+	{
+		j = 0;
+		while (j < size)
+		{
+			(*board)[i][j] = '.';
+			j++;
+		}
+		i++;
+	}
+}
 
 void	ft_display_board(char **board, int size)
 {
@@ -90,9 +116,12 @@ int		ft_receive_in_lst(int fd, t_list **begin)
 	int			order;
 
 	order = -1;
-	//ft_bzero(buff, 22);
+	ft_bzero(buff, 22);
 	while ((ret = read(fd, buff, 21)) >= 20)
 	{
+		order++;
+		if ((order + 1) > 26)
+			return (0);
 		buff[ret] = '\0';
 		if (!ft_check_input(buff))
 			return (0);
@@ -103,14 +132,12 @@ int		ft_receive_in_lst(int fd, t_list **begin)
 			new = (t_list*)ft_memalloc(sizeof(t_list));
 			ft_lstadd(begin, new);
 		}
-		order++;
 		ft_replace_hashtag(buff, order);
 		(*begin)->content = ft_memalloc(sizeof(t_tetrimino));
 		((t_tetrimino*)((*begin)->content))->tab = ft_strdup(buff);
 	}
 	if (ret == 0 && buff[20] != '\0')
 		return (0);
-
 	return (order + 1);
 }
 
@@ -120,29 +147,8 @@ int		main(int ac, char **av)
 	t_list 			*begin;
 	int				nbr_of_tetris;
 	char			**board;
-	int				i = 0;
-	int				j;
 
-	board = (char**) ft_memalloc(4 * sizeof(char*));
-	while (i < 4)
-	{
-		board[i] = (char*) ft_memalloc(4 * sizeof(char));
-		i++;
-	}
-
-	i = 0;
-	while (i < 4)
-	{
-		j = 0;
-		while (j < 4)
-		{
-			board[i][j] = '.';
-			j++;
-		}
-		i++;
-	}
-	ft_putchar(board[2][2]);
-
+	ft_creat_board(&board, 4);
 	if (ac != 2)
 		ft_putstr("usage: fillit file_name\n");
 	else
@@ -153,7 +159,7 @@ int		main(int ac, char **av)
 			ft_putstr("error\n");
 		else 
 		{
-			//printf("%d\n", nbr_of_tetris);
+			printf("nbr = %d\n", nbr_of_tetris);
 			ft_putstr("file is valid\n");
 			//printf("%s\n", ((t_tetrimino*)(begin->content))->tab);
 			ft_display_board(board, 4);
