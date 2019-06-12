@@ -6,13 +6,75 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/05/30 22:30:47 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/12 22:08:30 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-void	ft_creat_board(char ***board, int size)
+
+int		ft_minx(t_tetrimino tetrimino)
+{
+	int min;
+	int i;
+
+	min = 3;
+	i = -1;
+	while (++i < 4)
+	{
+		if (tetrimino.tab[i].x < min)
+			min = tetrimino.tab[i].x;
+	}
+	return (min);
+}
+
+int		ft_miny(t_tetrimino tetrimino)
+{
+	int min;
+	int i;
+
+	min = 3;
+	i = -1;
+	while (++i < 4)
+	{
+		if (tetrimino.tab[i].y < min)
+			min = tetrimino.tab[i].y;
+	}
+	return (min);
+}
+void	ft_subtract_from_coord(t_tetrimino *tetrimino, int i, int j)
+{
+	int index;
+
+	index = -1;
+	while (++index < 4)
+	{
+		(*tetrimino).tab[index].x -= i;
+		(*tetrimino).tab[index].y -= j;
+	}
+}
+
+void	ft_shift_tetrimino(t_tetrimino *tetris_tab, int nbr_of_tetris)
+{
+	int i;
+	int j;
+	int index;
+
+	index = 0;
+	while (nbr_of_tetris--)
+	{
+		i = ft_minx(tetris_tab[index]);
+		j = ft_miny(tetris_tab[index]);
+		ft_subtract_from_coord(&tetris_tab[index], i, j);
+		index++;
+	}
+}
+/*void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
+  {
+  ft_shift_tetrimino(t_tetrimino *tetris_tab, int nbr_of_tetris);
+  }*/
+
+void	ft_creat_new_board(char ***board, int size)
 {
 	int		i;
 	int		j;
@@ -57,19 +119,6 @@ void	ft_display_board(char **board, int size)
 	}
 }
 
-void	ft_replace_hashtag(char *tab, int order)
-{
-	int		i;
-
-	i = 0;
-	while (tab[i])
-	{
-		if (tab[i] == '#')
-			tab[i] = 65 + order;
-		i++;
-	}
-}
-
 int		ft_check_input(char *buff)
 {
 	int		i;
@@ -79,6 +128,8 @@ int		ft_check_input(char *buff)
 	contact = 0;
 	point = 0;
 	i = -1;
+	if (!buff)
+		return (0);
 	while (++i < 20)
 	{
 		if ((i + 1) % 5 == 0)
@@ -108,15 +159,32 @@ int		ft_check_input(char *buff)
 	return (point == 12 && (contact == 6 || contact == 8) && (buff[20] == '\n' || buff[20] == '\0'));
 }
 
-int		ft_receive_in_lst(int fd, t_list **begin)
+void	ft_add_to_tab(t_tetrimino *tetri_tab, int order, char *buff)
 {
-	char		buff[22];
-	t_list		*new;
-	ssize_t		ret;
-	int			order;
+	int		position;
+	int		i;
+
+	i = 0;
+	position = -1;
+	while (buff[++position])
+	{
+		if (buff[position] == '#')
+		{
+			tetri_tab[order].tab[i].x = position % 5;
+			tetri_tab[order].tab[i].y = position / 5;
+			tetri_tab[order].order = order + 1;
+			i++;
+		}
+	}
+}
+
+int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
+{
+	char			buff[22];
+	ssize_t			ret;
+	int				order;
 
 	order = -1;
-	ft_bzero(buff, 22);
 	while ((ret = read(fd, buff, 21)) >= 20)
 	{
 		order++;
@@ -125,18 +193,9 @@ int		ft_receive_in_lst(int fd, t_list **begin)
 		buff[ret] = '\0';
 		if (!ft_check_input(buff))
 			return (0);
-		if (!(*begin))
-			*begin = ft_lstnew(NULL, 0);
-		else
-		{
-			new = (t_list*)ft_memalloc(sizeof(t_list));
-			ft_lstadd(begin, new);
-		}
-		ft_replace_hashtag(buff, order);
-		(*begin)->content = ft_memalloc(sizeof(t_tetrimino));
-		((t_tetrimino*)((*begin)->content))->tab = ft_strdup(buff);
+		ft_add_to_tab(tetri_tab, order, buff);
 	}
-	if (ret == 0 && buff[20] != '\0')
+	if (ret == 0 && buff[20] != '\0') //gerer le dernier ligne
 		return (0);
 	return (order + 1);
 }
@@ -144,26 +203,52 @@ int		ft_receive_in_lst(int fd, t_list **begin)
 int		main(int ac, char **av)
 {
 	int				fd;
-	t_list 			*begin;
+	t_tetrimino		tetris_tab[26];
 	int				nbr_of_tetris;
-	char			**board;
+	int				i = 0;
+	int				j;
 
-	ft_creat_board(&board, 4);
 	if (ac != 2)
 		ft_putstr("usage: fillit file_name\n");
 	else
 	{
 		fd = open(av[1], O_RDONLY);
-		begin = NULL;
-		if (!(nbr_of_tetris = ft_receive_in_lst(fd, &begin)))
+		if (!(nbr_of_tetris = ft_receive_in_tab(fd, tetris_tab)))
 			ft_putstr("error\n");
 		else 
 		{
-			printf("nbr = %d\n", nbr_of_tetris);
-			ft_putstr("file is valid\n");
-			//printf("%s\n", ((t_tetrimino*)(begin->content))->tab);
-			ft_display_board(board, 4);
+			//ft_display_in_small_board(tetrimino *tetris_tab, nbr_of_tetris);
+			printf("----------avant---------\n");
+			while (i < 5)
+			{
+				j = 0;
+				while (j < 4)
+				{
+					printf("%d , %d\n", tetris_tab[i].tab[j].x , tetris_tab[i].tab[j].y);
+					j++;
+				}
+				printf("--order = %d\n", tetris_tab[i].order);
+				ft_putchar('\n');
+				i++;
+			}
+
+			ft_shift_tetrimino(tetris_tab, nbr_of_tetris);
+			printf("----------apres----nbroftetris---%d--\n", nbr_of_tetris);
+			i = 0;
+			while (i < 5)
+			{
+				j = 0;
+				while (j < 4)
+				{
+					printf("%d , %d\n", tetris_tab[i].tab[j].x , tetris_tab[i].tab[j].y);
+					j++;
+				}
+				printf("--order = %d\n", tetris_tab[i].order);
+				ft_putchar('\n');
+				i++;
+			}
 		}
+
 	}
-	return (1);
+	return (0);
 }
