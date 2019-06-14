@@ -6,12 +6,82 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/12 22:08:30 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/14 12:24:46 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
+void	ft_free_board(char ***board, int size)
+{
+	int i;
+
+	i = 0;
+	while (size--)
+		free((*board)[i++]);
+	free(*board);
+	*board = NULL;
+}
+
+int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size)
+{
+	int		i;
+	int		j;
+
+	i = -1;
+	while (++i < size)
+	{
+		j = -1;
+		while (++j < size - 1) 
+		{
+			k = -1;
+			while (++k < 4)
+				if (board[tetrimino.tab[k].x - i][tetrimino.tab[k].y - j] != '.')
+					return (0);
+		}
+	}
+	k = -1;
+	while (++k < 4)
+		board[tetrimino.tab[k].x - i][tetrimino.tab[k].y - j] != 64 + tetrimino.order;
+	return (1);
+}
+
+int		ft_fill_is_done(t_tetrimino tetris_tab, int nbr_of_tetris, int order, char ***board, int size)
+{
+	static int	*is_order_exist = (static int *)malloc(sizeof(int) * nbr_of_tetris);
+
+	if (!nbr_of_tetris)
+		return (1);
+	while (nbr_of_tetris)
+	{
+		if (!is_order_exist[order] && ft_add_tetri_to_board(tetris_tab[order], board, size))
+		{
+			is_order_exist[order] = 1;
+			nbr_of_tetris--;
+			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1, board, size))
+				return (1);
+		}
+	}
+	is_order_exist[order] = 0;
+	nbr_of_tetris--;
+	return (0);
+}
+
+void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
+{
+	char	**board;
+	int		size;
+
+	size = 2;
+	ft_shift_tetrimino(tetris_tab, nbr_of_tetris);
+	ft_creat_new_board(&board, size);
+	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, board, &size))) // in order that can change the value of size
+	{
+		ft_free_board(board);
+		ft_creat_new_board(&board, size + 1);
+	}
+	ft_display_board(board, size);
+}
 
 int		ft_minx(t_tetrimino tetrimino)
 {
@@ -69,12 +139,9 @@ void	ft_shift_tetrimino(t_tetrimino *tetris_tab, int nbr_of_tetris)
 		index++;
 	}
 }
-/*void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
-  {
-  ft_shift_tetrimino(t_tetrimino *tetris_tab, int nbr_of_tetris);
-  }*/
 
-void	ft_creat_new_board(char ***board, int size)
+
+void	ft_creat_new_board(char ***board, int size)//sinc I want to assigne a value to **board
 {
 	int		i;
 	int		j;
@@ -217,8 +284,8 @@ int		main(int ac, char **av)
 			ft_putstr("error\n");
 		else 
 		{
-			//ft_display_in_small_board(tetrimino *tetris_tab, nbr_of_tetris);
-			printf("----------avant---------\n");
+			ft_display_in_small_board(tetrimino *tetris_tab, nbr_of_tetris);
+			/*printf("----------avant---------\n");
 			while (i < 5)
 			{
 				j = 0;
@@ -246,9 +313,12 @@ int		main(int ac, char **av)
 				printf("--order = %d\n", tetris_tab[i].order);
 				ft_putchar('\n');
 				i++;
-			}
+			}*/
 		}
 
 	}
 	return (0);
 }
+
+/*system("clear");
+usleep(122);*/
