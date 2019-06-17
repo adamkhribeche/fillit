@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:55:55 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/14 21:52:40 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/17 00:48:19 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,17 @@
 #include "get_next_line.h"
 
 
-typedef struct		s_coordinates_block
+typedef struct		s_coordinates
 {
 	int		x;
 	int		y;
-}					t_coordinates_block;
+}					t_coordinates;
 
 typedef struct		s_tetrimino
 {
-	t_coordinates_block		tab[4];
-	int						order;
+	t_coordinates		tab[4];
+	int					order;
+	t_coordinates		position_in_board;//la place relative du tetri in board
 }				t_tetrimino;
 
 int		ft_check_input(char *buff);
@@ -43,9 +44,10 @@ int		ft_miny(t_tetrimino tetrimino);
 void	ft_subtract_from_coord(t_tetrimino *tetrimino, int i, int j);
 void	ft_creat_new_board(char ***board, int size);
 void	ft_display_board(char **board, int size);
-int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, char **board, int size);
+int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, int size);
 void	ft_free_board(char ***board, int size);
-int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size);
-//void	ft_rm_tetri_from_board(char **board, int size, t_tetrimino tetris_tab, int order);
+int		ft_add_tetri_to_board(t_tetrimino *tetrimino, char **board, int size);
+void	ft_rm_tetri_from_board(char **board, t_tetrimino tetrimino);
+int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris);
 
 #endif

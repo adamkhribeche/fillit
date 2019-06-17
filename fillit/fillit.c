@@ -6,21 +6,24 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/14 22:42:07 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/17 13:38:44 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-/*void	ft_rm_tetri_from_board(char **board, int size, t_tetrimono tetris_tab, int order)
+void	ft_rm_tetri_from_board(char **board, t_tetrimino tetrimino)
 {
 	int k;
+	int i;
+	int j;
 
+	j = tetrimino.position_in_board.x;
+	i = tetrimino.position_in_board.y;
 	k = -1;
 	while (++k < 4)
-		board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = 65 + tetrimino.order;
-	return (1);
-}*/
+		board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = '.';
+}
 
 void	ft_free_board(char ***board, int size)
 {
@@ -33,7 +36,7 @@ void	ft_free_board(char ***board, int size)
 	*board = NULL;
 }
 //-------------------
-int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size)
+int		ft_add_tetri_to_board(t_tetrimino *tetrimino, char **board, int size)//on recoit *tetri pour pouvoire changer ses elem
 {
 	int		i;
 	int		j;
@@ -48,17 +51,19 @@ int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size)
 			k = -1;
 			while (++k < 4)
 			{
-				if ((tetrimino.tab[k].x + j < size) && (tetrimino.tab[k].y + i < size) &&
-						board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] == '.')
-					continue;
+				if (((*tetrimino).tab[k].x + j < size) && ((*tetrimino).tab[k].y + i < size) &&
+						board[i + (*tetrimino).tab[k].y][j + (*tetrimino).tab[k].x] == '.')
+					continue ;
 				else
-					break;
+					break ;
 			}
 			if (k == 4)
 			{
 				k = -1;
 				while (++k < 4)
-					board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = 65 + tetrimino.order;
+					board[i + (*tetrimino).tab[k].y][j + (*tetrimino).tab[k].x] = 65 + (*tetrimino).order;
+				(*tetrimino).position_in_board.x = j;
+				(*tetrimino).position_in_board.y = i;
 				return (1);
 			}
 		}
@@ -66,32 +71,65 @@ int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size)
 	return (0);
 }
 //------------------
-int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, char **board, int size)
+int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
 {
-	static int	is_order_exist[26];
-	int			i;
+	int i;
 
 	i = 0;
-	if (!nbr_of_tetris)
-		return (1);
 	while (i < nbr_of_tetris)
 	{
-		if (!is_order_exist[order] && ft_add_tetri_to_board(tetris_tab[order], board, size))
+		if (!is_order_exist[i])
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, int size)
+{
+	static int	order_exist[26];
+	int			i;
+	int			k;
+
+	k = 1;
+	if (ft_is_all_tetri_exist(order_exist, nbr_of_tetris))
+		return (1);
+	while (k <= nbr_of_tetris)
+	{
+		//printf("----------\n");
+		i = 0;
+		while (i < nbr_of_tetris)
 		{
-			is_order_exist[order] = 1;
-			nbr_of_tetris--;
+			if (order_exist[i] == k)
+				break ;
+			i++;
+		}
+		if (order_exist[i] == k)
+		{
+			k++;
+			continue ;
+		}
+		if (ft_add_tetri_to_board(&tetris_tab[k - 1], board, size))
+		{
 			system("clear");//-------------------
 			ft_display_board(board, size);//-------------------------------
 			ft_putchar('\n');
 			usleep(1000000);//-------------------------------
-			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1, board, size))
+			i = 0;
+			while (order_exist[i] != 0 && i < nbr_of_tetris)
+			{
+				i++;
+			}
+			order_exist[i] = k;
+			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, board, size))
 				return (1);
+			order_exist[i] = 0;
+			ft_rm_tetri_from_board(board, tetris_tab[k - 1]);
 		}
-		i++;
+		k++;
 	}
-	//ft_rm_tetri_from_board(board, size, order, tetris_tab);
-	is_order_exist[order] = 0;
-	nbr_of_tetris++;
+	//ft_rm_tetri_from_board(board, tetris_tab[last - 1]);
+	//order_exist[i] = 0;
 	return (0);
 }
 //---------------------------------
@@ -105,7 +143,7 @@ void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
 		size++;
 	ft_shift_all_tetriminos(tetris_tab, nbr_of_tetris);
 	ft_creat_new_board(&board, size);
-	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board, size))) // 0 == order
+	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, board, size))) // 0 == order
 	{
 		ft_free_board(&board, size);
 		ft_creat_new_board(&board, ++size);
