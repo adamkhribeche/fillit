@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:55:55 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/17 00:48:19 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/17 17:45:01 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct		s_tetrimino
 {
 	t_coordinates		tab[4];
 	int					order;
-	t_coordinates		position_in_board;//la place relative du tetri in board
 }				t_tetrimino;
 
 int		ft_check_input(char *buff);
@@ -46,8 +45,8 @@ void	ft_creat_new_board(char ***board, int size);
 void	ft_display_board(char **board, int size);
 int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, int size);
 void	ft_free_board(char ***board, int size);
-int		ft_add_tetri_to_board(t_tetrimino *tetrimino, char **board, int size);
-void	ft_rm_tetri_from_board(char **board, t_tetrimino tetrimino);
+int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size, int position);
+void	ft_rm_tetri_from_board(char **board, int size, t_tetrimino tetrimino, int position);
 int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris);
 
 #endif
