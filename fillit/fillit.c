@@ -6,60 +6,61 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/18 13:31:43 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/18 18:49:15 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-void	ft_rm_tetri_from_board(char **board, int size, t_tetrimino tetrimino, int position)
+void	ft_rm_tetri_from_board(t_board *board, t_tetrimino tetrimino, int position)
 {
 	int k;
 	int i;
 	int j;
 
-	i = position / size;
-	j = position % size;
+	i = position / board->size;
+	j = position % board->size;
 	k = -1;
 	while (++k < 4)
-		board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = '.';
+		board->board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = '.';
 }
 //---------------------------
-void	ft_free_board(char ***board, int size)
+void	ft_free_board(t_board **board)// pour que je puiss mettre le pointeur a NULL
 {
 	int i;
 
 	i = 0;
-	while (size--)
-		free((*board)[i++]);
+	while ((*board)->size--)
+		free((*board)->board[i++]);
+	free((*board)->board);
 	free(*board);
 	*board = NULL;
 }
 //-------------------
-int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size, int position)
+int		ft_add_tetri_to_board(t_tetrimino tetrimino, t_board *board, int position)// pour qu'on puiss modifier board
 {
 	int		i;
 	int		j;
 	int		k;
 
-	i = position / size;
-	j = position % size;
+	i = position / board->size;
+	j = position % board->size;
 	k = -1;
 	while (++k < 4)
 	{
-		if ((tetrimino.tab[k].x + j < size) && (tetrimino.tab[k].y + i < size) &&
-				board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] == '.')
+		if ((tetrimino.tab[k].x + j < board->size) && (tetrimino.tab[k].y + i < board->size) &&
+				board->board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] == '.')
 			continue ;
 		else
 			return (0);
 	}
 	k = -1;
 	while (++k < 4)
-		board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = 65 + tetrimino.order;
+		board->board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = 65 + tetrimino.order;
 	return (1);
 }
 //------------------
-int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
+/*int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
 {
 	int i;
 
@@ -71,77 +72,52 @@ int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
 		i++;
 	}
 	return (1);
-}
+}*/
 
-int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, char **board, int size)
+int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, t_board *board)
 {
-	//static int	order_exist[26];
-	//int			order;
 	int			pt_nbr;
+	int			pt_max;
 
 	pt_nbr = 0;
 	//order = 0;
 	if (order == nbr_of_tetris)
 		return (1);
-	//if (ft_is_all_tetri_exist(order_exist, nbr_of_tetris))
-	//	return (1);
-	//while (order_exist[order] != 0)//since I'm here means that there is an order == 0
-	//	order++;
-	/*while (pt_nbr < size * size)// there is at lest one tetris no in board 
+	pt_max = board->size * board->size;
+	while (pt_nbr < pt_max)// there is at lest one tetris no in board 
 	{
 		//printf("----------\n");
-		if (ft_add_tetri_to_board(tetris_tab[order], board, size, pt_nbr))
+		if (ft_add_tetri_to_board(tetris_tab[order], board, pt_nbr))
 		{
 			system("clear");//-------------------
-			ft_display_board(board, size);//-------------------------------
-			//ft_putchar('\n');
+			ft_display_board(*board);//-------------------------------
+			ft_putchar('\n');
 			usleep(1000);//-------------------------------
-			order_exist[order] = 1;
-			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, board, size))
+			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1,  board))
 				return (1);
-			order_exist[order] = 0;
-			ft_rm_tetri_from_board(board, size, tetris_tab[order], pt_nbr);
-		}
-		pt_nbr++;
-	}*/
-	while (pt_nbr < size * size)// there is at lest one tetris no in board 
-	{
-		//printf("----------\n");
-		if (ft_add_tetri_to_board(tetris_tab[order], board, size, pt_nbr))
-		{
-			system("clear");//-------------------
-			ft_display_board(board, size);//-------------------------------
-			//ft_putchar('\n');
-			usleep(1000);//-------------------------------
-			//order_exist[order] = 1;
-			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1,  board, size))
-				return (1);
-			//order_exist[order] = 0;
-			ft_rm_tetri_from_board(board, size, tetris_tab[order], pt_nbr);
+			ft_rm_tetri_from_board(board, tetris_tab[order], pt_nbr);
 		}
 		pt_nbr++;
 	}
-	//ft_rm_tetri_from_board(board, tetris_tab[last - 1]);
-	//order_exist[i] = 0;
 	return (0);
 }
 //---------------------------------
 void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
 {
-	char	**board;
+	t_board	*board;
 	int		size;
 
 	size = 2;
 	while (size * size < nbr_of_tetris * 4)
 		size++;
 	ft_shift_all_tetriminos(tetris_tab, nbr_of_tetris);
-	ft_creat_new_board(&board, size);
-	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board, size))) // 0 == order
+	board = ft_creat_new_board (size);
+	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board))) // 0 == order
 	{
-		ft_free_board(&board, size);
-		ft_creat_new_board(&board, ++size);
+		ft_free_board(&board);
+		board = ft_creat_new_board(++size);
 	}
-	ft_display_board(board, size);
+	ft_display_board(*board);
 }
 //---------------------------
 int		ft_minx(t_tetrimino tetrimino)
@@ -202,43 +178,42 @@ void	ft_shift_all_tetriminos(t_tetrimino *tetris_tab, int nbr_of_tetris)
 	}
 }
 //----------------------------------------
-void	ft_creat_new_board(char ***board, int size)//sinc I want to assigne a value to **board
+t_board		*ft_creat_new_board(int size)//sinc I want to assigne a value to **board
 {
 	int		i;
 	int		j;
+	t_board *board;
 
-	*board = (char**) ft_memalloc(size * sizeof(char*));
+	board = (t_board*) ft_memalloc(sizeof(*board));
+	board->board = (char**) ft_memalloc(size * sizeof(char*));
 	i = 0;
 	while (i < size)
 	{
-		(*board)[i] = (char*) ft_memalloc(size * sizeof(char));
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
+		board->board[i] = (char*) ft_memalloc(size * sizeof(char));
 		j = 0;
 		while (j < size)
 		{
-			(*board)[i][j] = '.';
+			board->board[i][j] = '.';
 			j++;
 		}
 		i++;
 	}
+	board->size = size;
+	return (board);
 }
 //----------------------------------------
-void	ft_display_board(char **board, int size)
+void	ft_display_board(t_board board)
 {
 	int		i;
 	int		j;
 
 	i = 0;
-	while (i < size)
+	while (i < board.size)
 	{
 		j = 0;
-		while (j < size)
+		while (j < board.size)
 		{
-			ft_putchar(board[i][j]);
+			ft_putchar(board.board[i][j]);
 			ft_putchar(' ');
 			j++;
 		}
@@ -333,9 +308,6 @@ int		main(int ac, char **av)
 	int				fd;
 	t_tetrimino		tetris_tab[26];
 	int				nbr_of_tetris;
-	//int				i = 0;
-	//int				j;
-	//char			**board;
 
 	if (ac != 2)
 		ft_putstr("usage: fillit file_name\n");
@@ -345,50 +317,7 @@ int		main(int ac, char **av)
 		if (!(nbr_of_tetris = ft_receive_in_tab(fd, tetris_tab)))
 			ft_putstr("error\n");
 		else 
-		{
 			ft_display_in_small_board(tetris_tab, nbr_of_tetris);
-			
-			/*ft_shift_all_tetriminos(tetris_tab, nbr_of_tetris);
-			ft_creat_new_board(&board, 6);
-			ft_add_tetri_to_board(tetris_tab[0], board, 6);
-			ft_add_tetri_to_board(tetris_tab[1], board, 6);
-			ft_add_tetri_to_board(tetris_tab[2], board, 6);
-			ft_add_tetri_to_board(tetris_tab[3], board, 6);
-			ft_display_board(board, 6);*/
-
-
-			/*printf("----------avant---------\n");
-			while (i < 5)
-			{
-				j = 0;
-				while (j < 4)
-				{
-					printf("%d , %d\n", tetris_tab[i].tab[j].x , tetris_tab[i].tab[j].y);
-					j++;
-				}
-				printf("--order = %d\n", tetris_tab[i].order);
-				ft_putchar('\n');
-				i++;
-			}
-
-			ft_shift_tetrimino(tetris_tab, nbr_of_tetris);
-			printf("----------apres----nbroftetris---%d--\n", nbr_of_tetris);
-			i = 0;
-			while (i < 5)
-			{
-				j = 0;
-				while (j < 4)
-				{
-					printf("%d , %d\n", tetris_tab[i].tab[j].x , tetris_tab[i].tab[j].y);
-					j++;
-				}
-				printf("--order = %d\n", tetris_tab[i].order);
-				ft_putchar('\n');
-				i++;*/
-			}
-		}
+	}
 	return (0);
 }
-
-/*system("clear");
-usleep(122);*/
