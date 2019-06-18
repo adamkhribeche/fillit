@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/17 17:51:13 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/18 02:00:25 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_rm_tetri_from_board(char **board, int size, t_tetrimino tetrimino, int p
 	while (++k < 4)
 		board[i + tetrimino.tab[k].y][j + tetrimino.tab[k].x] = '.';
 }
-
+//---------------------------
 void	ft_free_board(char ***board, int size)
 {
 	int i;
@@ -83,15 +83,11 @@ int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, i
 	order = 0;
 	if (ft_is_all_tetri_exist(order_exist, nbr_of_tetris))
 		return (1);
+	while (order_exist[order] != 0)//since I'm here means that there is an order == 0
+		order++;
 	while (pt_nbr < size * size)// there is at lest one tetris no in board 
 	{
 		//printf("----------\n");
-		while (order <= nbr_of_tetris)
-		{
-			if (order_exist[order] == 0)
-				break ;
-			order++;
-		}
 		if (ft_add_tetri_to_board(tetris_tab[order], board, size, pt_nbr))
 		{
 			system("clear");//-------------------
