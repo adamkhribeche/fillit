@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:55:55 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/18 01:43:14 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/18 13:30:19 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int		ft_miny(t_tetrimino tetrimino);
 void	ft_subtract_from_coord(t_tetrimino *tetrimino, int i, int j);
 void	ft_creat_new_board(char ***board, int size);
 void	ft_display_board(char **board, int size);
-int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, int size);
+int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, char **board, int size);
 void	ft_free_board(char ***board, int size);
 int		ft_add_tetri_to_board(t_tetrimino tetrimino, char **board, int size, int position);
 void	ft_rm_tetri_from_board(char **board, int size, t_tetrimino tetrimino, int position);

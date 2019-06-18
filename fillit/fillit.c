@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/18 02:00:25 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/18 13:31:43 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,19 +73,21 @@ int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
 	return (1);
 }
 
-int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, int size)
+int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, char **board, int size)
 {
-	static int	order_exist[26];
-	int			order;
+	//static int	order_exist[26];
+	//int			order;
 	int			pt_nbr;
 
 	pt_nbr = 0;
-	order = 0;
-	if (ft_is_all_tetri_exist(order_exist, nbr_of_tetris))
+	//order = 0;
+	if (order == nbr_of_tetris)
 		return (1);
-	while (order_exist[order] != 0)//since I'm here means that there is an order == 0
-		order++;
-	while (pt_nbr < size * size)// there is at lest one tetris no in board 
+	//if (ft_is_all_tetri_exist(order_exist, nbr_of_tetris))
+	//	return (1);
+	//while (order_exist[order] != 0)//since I'm here means that there is an order == 0
+	//	order++;
+	/*while (pt_nbr < size * size)// there is at lest one tetris no in board 
 	{
 		//printf("----------\n");
 		if (ft_add_tetri_to_board(tetris_tab[order], board, size, pt_nbr))
@@ -98,6 +100,23 @@ int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, char **board, i
 			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, board, size))
 				return (1);
 			order_exist[order] = 0;
+			ft_rm_tetri_from_board(board, size, tetris_tab[order], pt_nbr);
+		}
+		pt_nbr++;
+	}*/
+	while (pt_nbr < size * size)// there is at lest one tetris no in board 
+	{
+		//printf("----------\n");
+		if (ft_add_tetri_to_board(tetris_tab[order], board, size, pt_nbr))
+		{
+			system("clear");//-------------------
+			ft_display_board(board, size);//-------------------------------
+			//ft_putchar('\n');
+			usleep(1000);//-------------------------------
+			//order_exist[order] = 1;
+			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1,  board, size))
+				return (1);
+			//order_exist[order] = 0;
 			ft_rm_tetri_from_board(board, size, tetris_tab[order], pt_nbr);
 		}
 		pt_nbr++;
@@ -117,7 +136,7 @@ void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
 		size++;
 	ft_shift_all_tetriminos(tetris_tab, nbr_of_tetris);
 	ft_creat_new_board(&board, size);
-	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, board, size))) // 0 == position
+	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board, size))) // 0 == order
 	{
 		ft_free_board(&board, size);
 		ft_creat_new_board(&board, ++size);
