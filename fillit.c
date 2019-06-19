@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/18 18:49:15 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/19 01:49:04 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,33 +60,17 @@ int		ft_add_tetri_to_board(t_tetrimino tetrimino, t_board *board, int position)/
 	return (1);
 }
 //------------------
-/*int		ft_is_all_tetri_exist(int *is_order_exist, int nbr_of_tetris)
-{
-	int i;
-
-	i = 0;
-	while (i < nbr_of_tetris)
-	{
-		if (!is_order_exist[i])
-			return (0);
-		i++;
-	}
-	return (1);
-}*/
-
 int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, t_board *board)
 {
 	int			pt_nbr;
 	int			pt_max;
 
 	pt_nbr = 0;
-	//order = 0;
 	if (order == nbr_of_tetris)
 		return (1);
 	pt_max = board->size * board->size;
 	while (pt_nbr < pt_max)// there is at lest one tetris no in board 
 	{
-		//printf("----------\n");
 		if (ft_add_tetri_to_board(tetris_tab[order], board, pt_nbr))
 		{
 			system("clear");//-------------------
@@ -112,7 +96,7 @@ void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
 		size++;
 	ft_shift_all_tetriminos(tetris_tab, nbr_of_tetris);
 	board = ft_creat_new_board (size);
-	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board))) // 0 == order
+	while (!(ft_fill_is_done(tetris_tab, nbr_of_tetris, 0, board))) // begin with order 0
 	{
 		ft_free_board(&board);
 		board = ft_creat_new_board(++size);
@@ -280,7 +264,7 @@ void	ft_add_to_tab(t_tetrimino *tetri_tab, int order, char *buff)
 		}
 	}
 }
-
+//--------------------------------------------
 int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 {
 	char			buff[22];
@@ -302,7 +286,7 @@ int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 		return (0);
 	return (order + 1);
 }
-
+//---------------------------------------------------------
 int		main(int ac, char **av)
 {
 	int				fd;
