@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/16 13:58:38 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/05/18 03:00:45 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/01 23:57:24 by nkhribec          #+#    #+#             */
+/*   Updated: 2019/04/04 18:26:31 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include <stdlib.h>
-# include "../libft/libft.h"
-# include <sys/types.h>
-# include <sys/uio.h>
-# include <unistd.h>
+void	ft_putnbr(int n)
+{
+	unsigned int	nb;
 
-# define BUFF_SIZE 2
-# define MAX_FD 4864
-
-int			get_next_line(const int fd, char **line);
-ssize_t		ft_get_untel_newline(char **s, const int fd);
-int			ft_append_line(char **line, char **s, const int fd);
-#endif
+	if (n < 0)
+	{
+		nb = -n;
+		ft_putchar('-');
+	}
+	else
+		nb = n;
+	if (nb > 9)
+	{
+		ft_putnbr(nb / 10);
+		ft_putchar(nb % 10 + '0');
+	}
+	else
+		ft_putchar(nb % 10 + '0');
+}
