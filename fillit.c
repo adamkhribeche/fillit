@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 18:54:17 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/19 01:49:04 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/27 19:04:19 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris, int order, t_bo
 	if (order == nbr_of_tetris)
 		return (1);
 	pt_max = board->size * board->size;
-	while (pt_nbr < pt_max)// there is at lest one tetris no in board 
+	while (pt_nbr < (pt_max - 3))// there is at lest one tetris no in board 
 	{
 		if (ft_add_tetri_to_board(tetris_tab[order], board, pt_nbr))
 		{
@@ -221,7 +221,7 @@ int		ft_check_input(char *buff)
 	{
 		if ((i + 1) % 5 == 0)
 		{
-			if (buff[i] != '\n')
+			if (buff[i] != '\n')// si je met ca en haut avec && ca va pas marcher
 				return (0);
 		}
 		else
@@ -270,11 +270,14 @@ int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 	char			buff[22];
 	ssize_t			ret;
 	int				order;
+	int				ret_prev;
 
 	order = -1;
-	while ((ret = read(fd, buff, 21)) >= 20)
+	ret_prev = 0;
+	while ((ret = read(fd, buff, 21)) >= 20)// 0 <= read <= 21    20 <= ret <= 21
 	{
 		order++;
+		ret_prev = ret;
 		if (order > 25)
 			return (0);
 		buff[ret] = '\0';
@@ -282,7 +285,7 @@ int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 			return (0);
 		ft_add_to_tab(tetri_tab, order, buff);
 	}
-	if (ret == 0 && buff[20] != '\0') //gerer le dernier ligne
+	if (ret != 0 || ret_prev != 20) // last read must return 20
 		return (0);
 	return (order + 1);
 }
