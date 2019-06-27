@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 14:09:01 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/20 22:03:06 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/27 18:47:26 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,9 @@ int		ft_fill_is_done(t_tetrimino *tetris_tab, int nbr_of_tetris,\
 	{
 		if (ft_add_tetri_to_board(tetris_tab[order], board, pt_nbr))
 		{
-			//system("clear");
-			//ft_display_board(*board);
-			//ft_putchar('\n');
-			//usleep(1000);
+			system("clear");
+			ft_display_board(*board);
+			usleep(1000);
 			if (ft_fill_is_done(tetris_tab, nbr_of_tetris, order + 1, board))
 				return (1);
 			ft_rm_tetri_from_board(board, tetris_tab[order], pt_nbr);
@@ -160,9 +159,9 @@ void	ft_shift_all_tetriminos(t_tetrimino *tetris_tab, int nbr_of_tetris)
 	index = 0;
 	while (nbr_of_tetris--)
 	{
-		i = ft_minx(tetris_tab[index]);
-		j = ft_miny(tetris_tab[index]);
-		ft_subtract_from_coord(&tetris_tab[index], i, j);
+		j = ft_minx(tetris_tab[index]);
+		i = ft_miny(tetris_tab[index]);
+		ft_subtract_from_coord(&tetris_tab[index], j, i);
 		index++;
 	}
 }
@@ -278,10 +277,13 @@ int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 	char		buff[22];
 	ssize_t		ret;
 	int			order;
+	int			ret_prev;
 
 	order = -1;
+	ret_prev = 0;
 	while ((ret = read(fd, buff, 21)) >= 20)
 	{
+		ret_prev = ret;
 		order++;
 		if (order > 25)
 			return (0);
@@ -290,7 +292,7 @@ int		ft_receive_in_tab(int fd, t_tetrimino *tetri_tab)
 			return (0);
 		ft_add_to_tab(tetri_tab, order, buff);
 	}
-	if (ret != 0 || (ret == 0 && buff[20] != '\0'))
+	if (ret != 0 || ret_prev != 20)
 		return (0);
 	return (order + 1);
 }
