@@ -6,13 +6,13 @@
 #    By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/18 19:50:14 by nkhribec          #+#    #+#              #
-#    Updated: 2019/06/19 20:52:01 by nkhribec         ###   ########.fr        #
+#    Updated: 2019/06/28 14:48:42 by nkhribec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fillit
-SRC = source.c main.c
-OBJ = source.o main.o
+SRC = board.c check_receive.c  shift.c fill.c main.c
+OBJ = board.o check_receive.o shift.o fill.o main.o
 FLAG = -Wall -Werror -Wextra
 
 all: $(NAME)

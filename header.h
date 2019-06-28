@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/18 19:34:18 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/20 21:37:16 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/28 15:02:53 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ typedef struct		s_board
 }					t_board;
 
 int					ft_check_input(char *buff);
+int					ft_check_buff(char *buff, int i, int *contact_point);
 int					ft_receive_in_tab(int fd, t_tetrimino *tetri_tab);
+void				ft_add_to_tab(t_tetrimino *tetri_tab, int order,\
+					char *buff);
 void				ft_display_in_small_board(t_tetrimino *tetris_tab,\
 					int nbr_of_tetris);
 void				ft_shift_all_tetriminos(t_tetrimino *tetris_tab,\
@@ -56,6 +59,5 @@ int					ft_add_tetri_to_board(t_tetrimino tetrimino,\
 					t_board *board, int position);
 void				ft_rm_tetri_from_board(t_board *board,\
 					t_tetrimino tetrimino, int position);
-int					ft_check_buff(char *buff, int i, int *contact_point);
 
 #endif
