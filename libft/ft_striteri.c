@@ -3,23 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/31 17:48:49 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/04 18:43:43 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/11 02:33:31 by fokrober          #+#    #+#             */
+/*   Updated: 2019/05/04 19:14:20 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 void	ft_striteri(char *s, void (*f)(unsigned int, char *))
 {
-	unsigned int i;
+	int i;
 
-	if (!s || !(*s) || !f)
-		return ;
-	i = 0;
-	while (s[i])
+	if (s && f)
 	{
-		(*f)(i, &s[i]);
-		i++;
+		i = 0;
+		while (*s)
+		{
+			f(i, s);
+			s++;
+			i++;
+		}
 	}
 }

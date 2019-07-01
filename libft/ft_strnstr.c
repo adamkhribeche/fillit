@@ -3,38 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <fokrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/30 21:00:25 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/10 18:40:42 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/20 18:10:03 by fokrober          #+#    #+#             */
+/*   Updated: 2019/04/23 18:45:02 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		ft_ishere(const char *s, const char *c, size_t max)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t size)
 {
-	while (*c && max--)
-		if (*s++ != *c++)
-			return (0);
-	if (!*c)
-		return (1);
-	return (0);
-}
+	size_t	len;
+	size_t	i;
 
-char			*ft_strnstr(const char *s, const char *tofind, size_t len)
-{
-	char	*tmp;
-
-	tmp = (char *)s;
-	if (!*tofind)
-		return (tmp);
-	while (*tmp && len)
-	{
-		if (ft_ishere(tmp, tofind, len))
-			return (tmp);
-		tmp++;
-		len--;
-	}
+	len = ft_strlen(needle);
+	if (len == 0)
+		return ((char*)haystack);
+	i = 0;
+	while (haystack[i] && (i + len <= size) &&
+		!ft_strnequ(&haystack[i], needle, len))
+		i++;
+	if ((i + len <= size) && ft_strnequ(&haystack[i], needle, len))
+		return (((char*)haystack) + i);
 	return (NULL);
 }

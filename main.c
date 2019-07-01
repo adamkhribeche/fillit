@@ -3,30 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/18 19:33:31 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/24 20:14:35 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/06/09 11:44:01 by fokrober          #+#    #+#             */
+/*   Updated: 2019/06/30 22:48:02 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "headers/fillit.h"
 
 int		main(int ac, char **av)
 {
-	int				fd;
-	t_tetrimino		tetris_tab[26];
-	int				nbr_of_tetris;
+	int		**all_tetris;
+	int		nbtetris_fd[2];
 
-	if (ac != 2)
-		ft_putstr("usage: fillit file_name\n");
-	else
+	if (ac == 2)
 	{
-		fd = open(av[1], O_RDONLY);
-		if (!(nbr_of_tetris = ft_receive_in_tab(fd, tetris_tab)))
-			ft_putstr("error\n");
+		if (!(all_tetris = (int**)ft_memalloc(27 * sizeof(int*))))
+			return (1);
+		nbtetris_fd[1] = open(av[1], O_RDONLY);
+		ft_bzero(all_tetris, sizeof(all_tetris));
+		if (valid_file(nbtetris_fd[1], all_tetris) == 1)
+		{
+			nbtetris_fd[0] = 0;
+			while (all_tetris[nbtetris_fd[0]] && nbtetris_fd[0] < 26)
+				nbtetris_fd[0]++;
+			fill(all_tetris, better_size(2, nbtetris_fd[0]), nbtetris_fd[0]);
+		}
 		else
-			ft_display_in_small_board(tetris_tab, nbr_of_tetris);
+			ft_putstr("error\n");
+		close(nbtetris_fd[1]);
 	}
+	else
+		ft_putstr("usage : ./fillit file\n");
 	return (0);
+}
+
+int		better_size(int size, int nbtetris)
+{
+	while (size * size < nbtetris * 4)
+		size++;
+	return (size);
 }

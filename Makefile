@@ -3,24 +3,26 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: fokrober <fokrober@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/06/18 19:50:14 by nkhribec          #+#    #+#              #
-#    Updated: 2019/06/30 15:38:28 by nkhribec         ###   ########.fr        #
+#    Created: 2019/07/01 02:08:35 by fokrober          #+#    #+#              #
+#    Updated: 2019/07/01 02:38:25 by fokrober         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fillit
-SRC = board.c check_receive.c  shift.c fill.c main.c
-OBJ = board.o check_receive.o shift.o fill.o main.o
-FLAG = -Wall -Werror -Wextra
+SRC = 	main.c srcs/fillit.c srcs/ft_strlenx.c srcs/isfull.c srcs/printab.c \
+		srcs/set_tetris.c srcs/shift_tetris.c srcs/sort.c srcs/valid_file.c \
+		srcs/valid_line.c srcs/valid_tetrimino.c
+OBJ = $(SRC:%.c=%.o)
+FLAG = -Wall -Wextra -Werror
+LIBFT = libft/libft.a
 
-all: $(NAME)
+all:	$(NAME)
 
 $(NAME):
-	make -C libft re
-	gcc $(FLAG) -c $(SRC)
-	gcc $(FLAG) -o $(NAME) $(OBJ) libft/libft.a
+	make -C libft
+	gcc $(FLAG) $(SRC) $(LIBFT) -o $(NAME)
 
 clean:
 	make -C libft clean
@@ -31,3 +33,4 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+	make -C libft re

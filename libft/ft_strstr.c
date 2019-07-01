@@ -3,32 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <fokrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/30 20:22:44 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/10 01:59:23 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/20 03:39:53 by fokrober          #+#    #+#             */
+/*   Updated: 2019/04/23 18:14:17 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		ft_ishere(const char *s, const char *c)
+char	*ft_strstr(const char *haystack, const char *needle)
 {
-	while (*c)
-		if (*(s++) != *(c++))
-			return (0);
-	return (1);
-}
+	size_t	len;
+	size_t	i;
 
-char			*ft_strstr(const char *s, const char *tofind)
-{
-	if (!*tofind)
-		return ((char*)s);
-	while (*s)
-	{
-		if (ft_ishere(s, tofind))
-			return ((char*)s);
-		s++;
-	}
+	len = ft_strlen(needle);
+	i = 0;
+	if (len == 0)
+		return ((void*)haystack);
+	while (haystack[i] && !ft_strnequ(&haystack[i], needle, len))
+		i++;
+	if (ft_strnequ(&haystack[i], needle, len))
+		return (((char*)haystack) + i);
 	return (NULL);
 }

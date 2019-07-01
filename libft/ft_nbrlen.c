@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_dup.c                                           :+:      :+:    :+:   */
+/*   ft_nbrlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <fokrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/05 15:22:00 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/11 20:23:46 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/19 03:33:58 by fokrober          #+#    #+#             */
+/*   Updated: 2019/04/23 14:47:38 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_dup(void const *content, size_t content_size)
+size_t	ft_nbrlen(int n)
 {
-	void		*new;
-	size_t		i;
+	size_t	len;
 
-	if (!(new = ft_memalloc(content_size)))
-		return (NULL);
-	i = 0;
-	while (i < content_size)
+	len = 0;
+	if (n <= 0)
+		len++;
+	while (n != 0)
 	{
-		((char*)new)[i] = ((char*)content)[i];
-		i++;
+		n /= 10;
+		len++;
 	}
-	return (new);
+	return (len);
 }

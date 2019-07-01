@@ -1,34 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrev.c                                        :+:      :+:    :+:   */
+/*   ft_lstpush.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/05 14:58:38 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/05 14:58:56 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/05/02 17:29:21 by fokrober          #+#    #+#             */
+/*   Updated: 2019/05/02 22:46:48 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strrev(char *str)
+t_list	*ft_lstpush(t_list *elm, t_list *new)
 {
-	int		count;
-	int		i;
-	char	c;
-
-	count = 0;
-	while (str[count] != '\0')
-		count++;
-	count = count - 1;
-	i = 0;
-	while (i < ((count + 1) / 2))
-	{
-		c = str[i];
-		str[i] = str[count - i];
-		str[count - i] = c;
-		i++;
-	}
-	return (str);
+	if (!elm && !new)
+		return (NULL);
+	while (elm->next)
+		elm = elm->next;
+	return ((elm->next = new));
 }

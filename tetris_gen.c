@@ -3,119 +3,86 @@
 /*                                                        :::      ::::::::   */
 /*   tetris_gen.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/11 14:28:42 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/27 17:58:52 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/06/10 13:48:52 by fokrober          #+#    #+#             */
+/*   Updated: 2019/06/29 02:21:45 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "fillit.h"
+#include "headers/fillit.h"
 
-int		ft_check_buff(char *buff, int i, int *contact_point)
+int		blocs_gen(int *tab)
 {
-	if ((i + 1) % 5 == 0)
+	tab[0] = arc4random_uniform(17);
+	tab[1] = arc4random_uniform(17);
+	tab[2] = arc4random_uniform(17);
+	tab[3] = arc4random_uniform(17);
+	return (valid_tetrimino(tab));
+}
+
+void	tetris_gen(char *tetris)
+{
+	int			tab[4];
+	int			ret;
+	int			i;
+
+	ret = 0;
+	i = 0;
+	while (!ret)
+		ret = blocs_gen(tab);
+	ret = 0;
+	while (ret < 16)
 	{
-		if (buff[i] != '\n')
-			return (0);
-	}
-	else
-	{
-		if (buff[i] == '.')
-			contact_point[1] += 1;
-		else if (buff[i] == '#')
+		if (tab[i] == ret + 1)
 		{
-			if (i > 0 && buff[i - 1] == '#')
-				contact_point[0] += 1;
-			if (i < 19 && buff[i + 1] == '#')
-				contact_point[0] += 1;
-			if (i < 14 && buff[i + 5] == '#')
-				contact_point[0] += 1;
-			if (i > 4 && buff[i - 5] == '#')
-				contact_point[0] += 1;
+			tetris[ret] = '#';
+			i++;
 		}
 		else
-			return (0);
+			tetris[ret] = '.';
+		ret++;
 	}
-	return (1);
 }
-int		ft_check_input(char *buff)
+
+void	print_tetris(char *tetris, int j)
 {
 	int		i;
-	int		contact_point[2];
-
-	contact_point[0] = 0;
-	contact_point[1] = 0;
-	i = -1;
-	while (++i < 20)
-		if (!ft_check_buff(buff, i, contact_point))
-			return (0);
-	return ((contact_point[1] == 12) &&\
-			(contact_point[0] == 6 || contact_point[0] == 8) &&\
-			(buff[20] == '\n' || buff[20] == '\0'));
-}
-
-int my_atoi(char *s)
-{
-	int res;
-
-	res = 0;
-	while (*s)
-	{
-		res = res * 10 + (*s - '0');
-		s++;
-	}
-	return (res);
-}
-int		tetris_gen(char *buf)// genere un seul tetrimino
-{
-	int	c;
-	int	i;
-	int	nb;
 
 	i = 0;
-	nb = 1;
-	while (i < 20)
+	while (i < 16)
 	{
-		if ((i + 1) % 5 == 0)
+		ft_putchar(tetris[i]);
+		if (!((i + 1) % 4))
 		{
-			buf[i++] = '\n';
-			continue ;
+			if (j != 26)
+				ft_putchar('\n');
+			else
+				ft_putchar('\n');
 		}
-		if (nb < 5 && (c = arc4random_uniform(2)))// le nbr max de # dans un tetrim c'est 4 + arc4random genere des nbr aleatoirs soit 0 soit 1
-		{
-			buf[i] = '#';
-			nb++;
-		}
-		else
-			buf[i] = '.';
 		i++;
 	}
-	return (0);
 }
 
 int		main(int ac, char **av)
 {
-	char	buf[21];
+	char	tetris[16];
+	int		nbtetris;
 	int		i;
-	int		n;
 
-	i = 0;
-	buf[20] = '\0';
-	n = my_atoi(av[ac - 1]);
-	while (i < n)// generer ft_atoi(av[ac - 1]) tetrimino
+	i = 1;
+	if (ac != 2)
+		return (0);
+	nbtetris = ft_atoi(av[1]);
+	while (i < nbtetris)
 	{
-		tetris_gen(buf);
-		if (ft_check_input(buf))
-		{
-			if (i == n - 1)
-				printf("%s", buf);
-			else
-				printf("%s\n", buf);
-			i++;
-		}
+		ft_putnbr(i);
+		ft_putchar('\n');
+		tetris_gen(tetris);
+		print_tetris(tetris, i);
+		i++;
+		if (i != nbtetris)
+			ft_putchar('\n');
 	}
 	return (0);
 }

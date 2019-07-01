@@ -3,60 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/31 21:14:12 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/11 20:25:18 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/13 13:52:10 by fokrober          #+#    #+#             */
+/*   Updated: 2019/04/23 19:51:12 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t		ft_countw(const char *s, char c)
+char	**ft_strsplit(char const *s, char c)
 {
-	int count;
+	char	**tab;
+	size_t	i;
+	size_t	j;
 
-	count = 0;
-	if (*s != c)
-	{
-		count++;
-		s++;
-	}
-	while (*s)
-	{
-		if (*s != c && *(s - 1) == c)
-			count++;
-		s++;
-		while (*s == c)
-			s++;
-	}
-	return (count);
-}
-
-char				**ft_strsplit(char const *s, char c)
-{
-	char			**tab;
-	int				i;
-	int				j;
-	size_t			len;
-	unsigned int	start;
-
-	if (!s || !(tab = (char**)ft_memalloc(sizeof(s) * (ft_countw(s, c) + 1))))
-		return (NULL);
+	if (!s)
+		return (0);
 	i = 0;
-	j = 0;
-	while ((s[i] == c) && s[i])
-		i++;
+	if (!(tab = ft_memalloc(sizeof(char*))))
+		return (NULL);
 	while (s[i])
 	{
-		start = i;
-		len = 0;
-		while (s[i + len] != c && s[i + len])
-			len++;
-		i = i + len;
-		tab[j++] = ft_strsub(s, start, len);
-		while (s[i] == c && s[i])
+		while (s[i] && s[i] == c)
 			i++;
+		j = i;
+		while (s[i] && s[i] != c)
+			i++;
+		if (i > j)
+		{
+			tab = ft_push_str(tab, ft_strsub(s, j, (i - j)));
+		}
+		if (!s[i])
+			break ;
+		i++;
 	}
 	return (tab);
 }

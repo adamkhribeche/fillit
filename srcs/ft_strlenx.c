@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lst_add_end.c                                   :+:      :+:    :+:   */
+/*   ft_strlenx.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/11 21:18:31 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/11 21:19:28 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/06/23 10:08:54 by fokrober          #+#    #+#             */
+/*   Updated: 2019/06/27 20:44:02 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../headers/fillit.h"
 
-void	ft_lst_add_end(t_list *begin, t_list *new)
+size_t	ft_strlenx(const char *s)
 {
-	while (begin->next)
-		begin = begin->next;
-	begin->next = new;
+	size_t	len;
+
+	len = 0;
+	while (s[len] != '\n')
+		len++;
+	return (len);
 }

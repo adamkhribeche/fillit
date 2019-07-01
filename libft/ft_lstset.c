@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isspace.c                                       :+:      :+:    :+:   */
+/*   ft_lstset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/10 18:47:48 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/10 19:07:31 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/05/03 00:43:26 by fokrober          #+#    #+#             */
+/*   Updated: 2019/05/03 00:50:37 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_isspace(int c)
+void	*ft_lstset(t_list **elm, void const *content, size_t content_size)
 {
-	return (c == ' ' || (c <= 13 && c >= 9));
+	(*elm)->content = ft_memdup(content, content_size);
+	(*elm)->content_size = content_size;
+	return ((*elm)->content);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fokrober <fokrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/30 00:00:54 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/04/10 19:18:21 by nkhribec         ###   ########.fr       */
+/*   Created: 2019/04/23 00:46:08 by fokrober          #+#    #+#             */
+/*   Updated: 2019/04/23 19:31:30 by fokrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,5 @@
 
 int		ft_atoi(const char *str)
 {
-	int signe;
-	int result;
-
-	signe = 1;
-	result = 0;
-	while (*str && ft_isspace(*str))
-		str++;
-	if (*str == '-')
-	{
-		signe = -1;
-		str++;
-	}
-	else if (*str == '+')
-		str++;
-	while (ft_isdigit(*str))
-	{
-		result = result * 10 + (*str - '0');
-		str++;
-	}
-	return (result * signe);
+	return (ft_atonbr(ft_build_nbr(ft_strtrim(str))));
 }
