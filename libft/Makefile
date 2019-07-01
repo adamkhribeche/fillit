@@ -6,7 +6,7 @@
 #    By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/31 15:41:36 by nkhribec          #+#    #+#              #
-#    Updated: 2019/06/19 16:21:55 by nkhribec         ###   ########.fr        #
+#    Updated: 2019/06/30 15:38:02 by nkhribec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -148,14 +148,14 @@ FLAGS = -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME):
-	gcc $(FLAGS) -c $(SRC)
-	ar -rc $(NAME) $(OBJ)
-	ranlib $(NAME)
+	@gcc $(FLAGS) -c $(SRC)
+	@ar -rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all

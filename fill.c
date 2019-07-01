@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 14:24:06 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/28 14:49:30 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/06/30 14:56:18 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,5 @@ void	ft_display_in_small_board(t_tetrimino *tetris_tab, int nbr_of_tetris)
 		board = ft_creat_new_board(++size);
 	}
 	ft_display_board(*board);
+	ft_free_board(&board);
 }
