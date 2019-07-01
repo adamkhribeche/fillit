@@ -6,7 +6,7 @@
 /*   By: nkhribec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/18 19:33:31 by nkhribec          #+#    #+#             */
-/*   Updated: 2019/06/24 20:14:35 by nkhribec         ###   ########.fr       */
+/*   Updated: 2019/07/01 23:25:36 by nkhribec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int		main(int ac, char **av)
 			ft_putstr("error\n");
 		else
 			ft_display_in_small_board(tetris_tab, nbr_of_tetris);
+		close(fd);
 	}
 	return (0);
 }
